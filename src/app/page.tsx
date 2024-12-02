@@ -7,6 +7,23 @@ import dice4 from "../../assets/4.png";
 import dice5 from "../../assets/5.png";
 import dice6 from "../../assets/6.png";
 
+// Define types for Telegram WebApp (if not already available)
+interface TelegramWebApp {
+  ready: () => void;
+  MainButton: {
+    text: string;
+    show: () => void;
+    onClick: (callback: () => void) => void;
+  };
+  sendData: (data: string) => void;
+}
+
+declare global {
+  interface Window {
+    Telegram: { WebApp: TelegramWebApp };
+  }
+}
+
 export default function DiceGame() {
   const [diceRoll, setDiceRoll] = useState<number | null>(1);
   const [score, setScore] = useState(0);
@@ -18,7 +35,7 @@ export default function DiceGame() {
   useEffect(() => {
     // Initialize Telegram WebApp environment
     if (typeof window !== "undefined" && "Telegram" in window) {
-      const tg = (window as any).Telegram.WebApp;
+      const tg = window.Telegram.WebApp;
       tg.ready();
       tg.MainButton.text = "Submit Score";
       tg.MainButton.show();
